@@ -28,6 +28,33 @@ window.app = function() {
 		return d;
 	}
 
+	function getSearchTermFromUrl(url) {
+		var idx = url.lastIndexOf(url, '/');
+		if (idx >= 0) {
+			return url.substring(idx+1);
+		} else {
+			return null;
+		}
+	}
+
+	function load404Page(searchTerm) {
+		loadLocalPage('404.html');
+		if (searchTerm) {
+			$('#error-not-found-p').text(mw.message('error-not-found-search-term', searchTerm));
+		} else {
+			$('#error-not-found-p').text(mw.message('error-not-found'));
+		}
+	}
+
+	function loadErrorPage(searchTerm) {
+		loadLocalPage('error.html');
+		if (searchTerm) {
+			$('#error-not-available-p').text(mw.message('error-not-available-search-term', searchTerm));
+		} else {
+			$('#error-not-available-p').text(mw.message('error-not-available'));
+		}
+	}
+
 	function loadPage(url, origUrl, noScroll) {
 		var d = $.Deferred();
 		origUrl = origUrl || url;
@@ -43,10 +70,11 @@ window.app = function() {
 						d.resolve();
 					},
 				error: function(xhr) {
+					var searchTerm = getSearchTermFromUrl(url);
 					if(xhr.status == 404) {
-						loadLocalPage('404.html');
+						load404Page(searchTerm);
 					} else {
-						loadLocalPage('error.html');
+						loadErrorPage(searchTerm);
 					}
 					languageLinks.clearLanguages();
 					setMenuItemState('read-in', false);
