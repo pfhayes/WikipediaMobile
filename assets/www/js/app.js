@@ -88,7 +88,7 @@ window.app = function() {
 					} else {
 						loadErrorPage(url);
 					}
-					chrome.onPageLoaded(noScroll);
+					chrome.hideSpinner();
 					languageLinks.clearLanguages();
 					setMenuItemState('read-in', false);
 					setPageActionsState(false);
