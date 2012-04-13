@@ -29,30 +29,43 @@ window.app = function() {
 	}
 
 	function getSearchTermFromUrl(url) {
-		var idx = url.lastIndexOf(url, '/');
+		var prefix = '/wiki/';
+		var idx = url.lastIndexOf(prefix);
 		if (idx >= 0) {
-			return url.substring(idx+1);
+			return url.substring(idx+prefix.length);
 		} else {
 			return null;
 		}
 	}
 
-	function load404Page(searchTerm) {
-		loadLocalPage('404.html');
-		if (searchTerm) {
-			$('#error-not-found-p').text(mw.message('error-not-found-search-term', searchTerm));
-		} else {
-			$('#error-not-found-p').text(mw.message('error-not-found'));
-		}
+	function load404Page(url) {
+		var template = templates.getTemplate('error-page-template');
+		var searchTerm = getSearchTermFromUrl(url);
+		var errormessage = searchTerm ?
+			mw.message('error-not-found-search-term', searchTerm) :
+			mw.message('error-not-found');
+		var html = template.render({
+			'messages':[
+				{'text':errormessage},
+				{'text':mw.message('error-not-found-reason')},
+				{'text':mw.message('error-search-again')}
+			]});
+		$('#main').html(html);
 	}
 
-	function loadErrorPage(searchTerm) {
-		loadLocalPage('error.html');
-		if (searchTerm) {
-			$('#error-not-available-p').text(mw.message('error-not-available-search-term', searchTerm));
-		} else {
-			$('#error-not-available-p').text(mw.message('error-not-available'));
-		}
+	function loadErrorPage(url) {
+		var template = templates.getTemplate('error-page-template');
+		var searchTerm = getSearchTermFromUrl(url);
+		var errormessage = searchTerm ?
+			mw.message('error-not-available-search-term', searchTerm) :
+			mw.message('error-not-available');
+		var html = template.render({
+			'messages':[
+				{'text':errormessage},
+				{'text':mw.message('error-offline')},
+				{'text':mw.message('error-saved-or-online')}
+			]});
+		$('#main').html(html);
 	}
 
 	function loadPage(url, origUrl, noScroll) {
@@ -72,10 +85,11 @@ window.app = function() {
 				error: function(xhr) {
 					var searchTerm = getSearchTermFromUrl(url);
 					if(xhr.status == 404) {
-						load404Page(searchTerm);
+						load404Page(url);
 					} else {
-						loadErrorPage(searchTerm);
+						loadErrorPage(url);
 					}
+					chrome.onPageLoaded(noScroll);
 					languageLinks.clearLanguages();
 					setMenuItemState('read-in', false);
 					setPageActionsState(false);
