@@ -83,7 +83,6 @@ window.app = function() {
 						d.resolve();
 					},
 				error: function(xhr) {
-					var searchTerm = getSearchTermFromUrl(url);
 					if(xhr.status == 404) {
 						load404Page(url);
 					} else {
