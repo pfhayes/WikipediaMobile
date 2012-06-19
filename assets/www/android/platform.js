@@ -165,6 +165,13 @@ function updateMenuState() {
 		'select-text': function() { selectText(); },
 		'view-settings': function() { appSettings.showSettings(); },
 	};
+
+	// On Android 3.0 or newer, remove the 'Select Text' option
+	var version = parseInt(device.version.substr(0,1));
+	if (version >= 3.0) {
+		$('#selectTextCmd').remove();
+	}
+
 	$('#appMenu command').each(function() {
 		var $command = $(this),
 			id = $command.attr('id'),
