@@ -60,7 +60,12 @@ chrome.addPlatformInitializer(function() {
 		// Android 2.2/2.3 doesn't do overflow:scroll
 		// so we need to engage alternate styles for phone view.
 		$('html').removeClass('goodscroll').addClass('badscroll');
+	} else {
+		// On Android 3.0 or newer, selecting text is supported natively, so we do not
+		// need the menu option
+		$('#selectTextCmd').remove();
 	}
+
 
     document.addEventListener("backbutton", onBackButton, false);
     document.addEventListener("searchbutton", onSearchButton, false);
@@ -165,14 +170,6 @@ function updateMenuState() {
 		'select-text': function() { selectText(); },
 		'view-settings': function() { appSettings.showSettings(); },
 	};
-
-	// On Android 3.0 or newer, selecting text is supported natively, so we do not
-	// need the menu option
-	var version = parseInt(device.version.substr(0,1));
-	if (version >= 3) {
-		$('#selectTextCmd').remove();
-	}
-
 	$('#appMenu command').each(function() {
 		var $command = $(this),
 			id = $command.attr('id'),
