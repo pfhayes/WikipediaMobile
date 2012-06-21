@@ -166,9 +166,10 @@ function updateMenuState() {
 		'view-settings': function() { appSettings.showSettings(); },
 	};
 
-	// On Android 3.0 or newer, remove the 'Select Text' option
+	// On Android 3.0 or newer, selecting text is supported natively, so we do not
+	// need the menu option
 	var version = parseInt(device.version.substr(0,1));
-	if (version >= 3.0) {
+	if (version >= 3) {
 		$('#selectTextCmd').remove();
 	}
 
