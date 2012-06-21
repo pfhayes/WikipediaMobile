@@ -66,7 +66,6 @@ chrome.addPlatformInitializer(function() {
 		$('#selectTextCmd').remove();
 	}
 
-
     document.addEventListener("backbutton", onBackButton, false);
     document.addEventListener("searchbutton", onSearchButton, false);
 
